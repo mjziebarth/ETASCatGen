@@ -38,11 +38,22 @@ with $`\beta = \ln(10) b`$ (Ogata, 1988).
 For the Hawkes process to be stationary, the expected number of offspring triggered by an
 earthquake needs to be less than one. This is expressed in the condition
 ```math
-...
+    \left\langle f(M) \int\limits_0^\infty \frac{K}{(t+c)^p \mathrm{d}t} \right\rangle_M
+    < 1
 ```
 which leads to an upper bound on $`K`$:
 ```math
-
+    K < K^* = \left\lbrace \begin{array}{ll}
+        \frac{1}{\tau(M_\mathrm{max} - M_\mathrm{min})} &: \quad \alpha = \beta \\
+        \frac{\alpha - \beta}
+             {\tau\left(\exp\left((\alpha-\beta)M_\mathrm{max}\right)
+                        - \exp\left((\alpha-\beta)M_\mathrm{min}\right)
+                  \right)}
+```
+with
+```math
+    \tau = \frac{c^{1-p}\exp\big((\beta - \alpha) M_\mathrm{min}\big)}
+                {(p-1)\left(1 - \exp\big(-\beta(M_\mathrm{max} - M_\mathrm{min}\big)\right)}
 ```
 
 The ETASCatGen module takes a number of choices with regards to the parameters:
