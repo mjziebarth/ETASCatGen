@@ -49,6 +49,8 @@ which leads to an upper bound on $`K`$:
              {\tau\left(\exp\left((\alpha-\beta)M_\mathrm{max}\right)
                         - \exp\left((\alpha-\beta)M_\mathrm{min}\right)
                   \right)}
+            &: \quad \alpha \neq \beta
+    \end{array}\right.
 ```
 with
 ```math
