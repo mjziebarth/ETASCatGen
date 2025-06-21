@@ -48,7 +48,8 @@ struct Process_M_t {
     Time Tref;
     Time c;
     double beta;
-    double Mr;
+    double alpha;
+    double Mmin;
     double p;
     double ln_p;
     Frequency FK;
@@ -58,15 +59,15 @@ struct Process_M_t {
         Time Tref,
         Time c,
         double beta,
-        double Mr,
+        double alpha,
         double p,
         double Mmin,
         double Mmax,
         double offspring_fraction
-    ) : mu_0(mu_0), Tref(Tref), c(c), beta(beta),
-        Mr(Mr), p(p), ln_p(std::log(p)),
+    ) : mu_0(mu_0), Tref(Tref), c(c), beta(beta), alpha(alpha),
+        Mmin(Mmin), p(p), ln_p(std::log(p)),
         FK(
-            critical_FK(Mmin, Mmax, p, c, Tref, beta, Mr)
+            critical_FK(Mmin, Mmax, p, c, Tref, beta, alpha)
             * offspring_fraction
         )
     {}
@@ -79,21 +80,23 @@ private:
         Time c,
         Time Tref,
         double beta,
-        double Mr
+        double alpha
     )
     {
-        /*
-         * A translation of the Python code:
-         *
-         * (p-1) * c ** (p-1)
-         *   * (1 - np.exp(-beta * (Mmax - Mmin)))
-         *   / (beta * np.exp(beta * (Mmin - Mr))*(Mmax - Mmin))
-         *   / Tref ** p
-         */
-        return (p - 1.0) *
-            std::exp(p * std::log(c / Tref)) / c
-            * (1.0 - std::exp(-beta * (Mmax - Mmin)))
-            / (beta * std::exp(beta * (Mmin - Mr)) * (Mmax - Mmin));
+        Time tau = std::pow(Tref / c, p)
+            * c * beta * std::exp((beta - alpha) * Mmin)
+            / ((p - 1.0) * (1.0 - std::exp(-beta * (Mmax - Mmin))));
+        if (alpha == beta){
+            /*
+             * Integrate a constant over M:
+             */
+            return 1.0 / (tau * (Mmax - Mmin));
+        } else {
+            return 1.0 / (tau * (
+                std::exp((alpha-beta) * Mmax)
+                - std::exp((alpha-beta) * Mmin)
+            ));
+        }
     }
 };
 
@@ -119,7 +122,7 @@ private:
  */
 static double f(double M, const Process_M_t& process)
 {
-    return std::exp(process.beta * (M - process.Mr));
+    return std::exp(process.alpha * (M - process.Mmin));
 }
 
 // static double Lambda_i(
@@ -255,9 +258,9 @@ void ETAS_generate_catalog_M_t(
     double Mmin,
     double Mmax,
     double beta,
+    double alpha,
     double p,
     const cyantities::QuantityWrapper& c,
-    double Mr,
     double offspring_fraction,
     const size_t N_skip,
     size_t seed,
@@ -292,7 +295,7 @@ void ETAS_generate_catalog_M_t(
         Tref,
         c.get<Time>(),
         beta,
-        Mr,
+        alpha,
         p,
         Mmin,
         Mmax,
