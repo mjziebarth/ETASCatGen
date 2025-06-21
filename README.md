@@ -64,3 +64,63 @@ The ETASCatGen module takes a number of choices with regards to the parameters:
    at which the Hawkes process catastrophically self-resonates (that is, an expected
    offspring number of 1).
  - Stationarity requires that $p > 1$.
+
+## Usage
+ETASCatGen comes with one function: `generate_catalog_M_t`. This generates
+a catalog of earthquakes with occurrence times and magnitudes.
+
+### Python
+ETASCatGen is built on NumPy and Cyantities (for physical unit support).
+It comprises of one function that can be used like so:
+```Python
+# Import necessary packages:
+from etascatgen import generate_catalog_M_t
+from cyantities import Quantity
+import numpy as np # to use np.log
+
+# Set a time scale:
+yr = Quantity(60 * 60 * 24 * 365.25, 's')
+
+# Set the parameters of the ETAS model and the
+# Gutenberg-Richter distribution:
+mu_0 = 1e-3 / yr
+Mmin = 4.0
+Mmax = 9.0
+beta = np.log(10) * 1.0
+alpha = beta
+p = 1.2  # significant memory
+c = yr / 16
+offspring_fraction = 0.95
+
+# Build a large catalog.
+N = 10000000
+
+# The Hawkes process might take some time
+# to approach a steady state since we
+# start at t=0 and not t=-inf (in particular
+# when we are at p < 1.5).
+# `N_skip` starts the process by discarding
+# the first N_skip events.
+# NOTE: this example is not necessarily in
+#       steady state!
+#       What is more, whether the ETAS
+#       model is mean-square ergodic
+#       in this parameter range
+#       (1.0 < p < 1.5) is unclear to the
+#       author at the time of writing.
+N_skip = 10*N
+
+
+Mi, ti = generate_catalog_M_t(
+    N,
+    mu_0,
+    Mmin,
+    Mmax,
+    beta,
+    alpha,
+    p,
+    c,
+    offspring_fraction,
+    N_skip
+)
+```
