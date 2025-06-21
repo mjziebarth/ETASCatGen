@@ -124,3 +124,10 @@ Mi, ti = generate_catalog_M_t(
     N_skip
 )
 ```
+
+## Install
+You can build and install ETASCatGen from the project's root
+directory using Pip:
+```bash
+pip install --user .
+```
