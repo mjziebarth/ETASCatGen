@@ -1,0 +1,48 @@
+[build-system]
+requires = [
+    "setuptools>=61",
+    "wheel",
+    "cython",
+    "mebuex>=1.3.0",
+    "numpy>=1.26",
+    "cyantities>=0.6.0"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ETASCatGen"
+version = "0.0.0"
+authors = [
+    {name = "Malte J. Ziebarth", email = "mjz.science@fmvkb.de"},
+]
+description = """\
+   Generate ETAS catalogs."""
+dependencies = [
+    "numpy",
+    "cython",
+    "mebuex",
+    "cyantities"
+]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Cython",
+    "Programming Language :: C++",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux"
+]
+readme = "README.md"
+license-files = [
+    "LICENSE"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/mjziebarth/ETASCatGen"
+"Bug Tracker" = "https://github.com/mjziebarth/ETASCatGen/issues"
+"Documentation" = "https://github.com/mjziebarth/ETASCatGen"
+
+[tool.setuptools]
+packages = [
+    "etascatgen"
+]
